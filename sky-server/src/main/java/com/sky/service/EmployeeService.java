@@ -11,7 +11,6 @@ public interface EmployeeService {
     /**
      * 员工登录
      * @param employeeLoginDTO
-     * @return
      */
     Employee login(EmployeeLoginDTO employeeLoginDTO);
 
@@ -33,4 +32,16 @@ public interface EmployeeService {
      * @param id
      */
     void changeStatus(Integer status, Long id);
+
+    /**
+     * 根据id查询员工
+     * @param id
+     */
+    Employee getById(Long id);
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    void update(EmployeeDTO employeeDTO);
 }
