@@ -20,4 +20,10 @@
     <delete id="deleteBatch">
 
     </delete>
+    <delete id="deleteByDishIds">
+        delete from dish where id in
+        <foreach collection="dishIds" item="dishId" open="(" separator="," close=")">
+            #{dishId}
+        </foreach>
+    </delete>
 </mapper>
