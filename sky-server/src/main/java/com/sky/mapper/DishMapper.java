@@ -39,6 +39,7 @@ public interface DishMapper {
 
     /**
      * 根据id查询菜品
+     *
      * @param id
      * @return
      */
@@ -57,4 +58,11 @@ public interface DishMapper {
      * @param dishIds
      */
     void deleteByDishIds(List<Long> dishIds);
+
+    /**
+     * 更新菜品
+     * @param dish
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Dish dish);
 }
