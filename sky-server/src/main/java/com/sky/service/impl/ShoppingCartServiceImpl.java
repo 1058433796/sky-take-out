@@ -4,14 +4,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.ShoppingCartDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
-import com.sky.entity.SetmealDish;
 import com.sky.entity.ShoppingCart;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
-import com.sky.mapper.ShoppingMapper;
-import com.sky.service.DishService;
+import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.ShoppingCartService;
-import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,7 @@ import java.util.List;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Autowired
-    private ShoppingMapper shoppingMapper;
+    private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private DishMapper dishMapper;
     @Autowired
@@ -40,12 +37,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
         shoppingCart.setUserId(BaseContext.getCurrentId());
-        List<ShoppingCart> list = shoppingMapper.list(shoppingCart);
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
         if (list!= null && !list.isEmpty()) {
             // 如果添加的菜品或者套餐已经存在购物车中，则数量+1
             ShoppingCart cart = list.get(0);
             cart.setNumber(cart.getNumber() + 1);
-            shoppingMapper.updateNumberById(cart);
+            shoppingCartMapper.updateNumberById(cart);
         }else{
             // 如果添加的菜品或者套餐不存在购物车中，则添加到购物车中
             Long dishId = shoppingCart.getDishId();
@@ -65,7 +62,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCart.setNumber(1);
             shoppingCart.setCreateTime(LocalDateTime.now());
             // 添加到购物车中
-            shoppingMapper.insert(shoppingCart);
+            shoppingCartMapper.insert(shoppingCart);
         }
     }
 
@@ -77,7 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public List<ShoppingCart> list() {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(BaseContext.getCurrentId());
-        return shoppingMapper.list(shoppingCart);
+        return shoppingCartMapper.list(shoppingCart);
     }
 
     /**
@@ -85,7 +82,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      */
     @Override
     public void clean() {
-        shoppingMapper.deleteByUserId(BaseContext.getCurrentId());
+        shoppingCartMapper.deleteByUserId(BaseContext.getCurrentId());
     }
 
     /**
@@ -97,15 +94,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
         shoppingCart.setUserId(BaseContext.getCurrentId());
-        List<ShoppingCart> list = shoppingMapper.list(shoppingCart);
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
         if (list!= null && !list.isEmpty()) {
             ShoppingCart cart = list.get(0);
             if (cart.getNumber() > 1) {
                 cart.setNumber(cart.getNumber() - 1);
-                shoppingMapper.updateNumberById(cart);
+                shoppingCartMapper.updateNumberById(cart);
             } else {
                 // 如果数量减1后，数量为0，则删除该商品
-                shoppingMapper.deleteById(cart.getId());
+                shoppingCartMapper.deleteById(cart.getId());
             }
         }
     }
